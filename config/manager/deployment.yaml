@@ -28,11 +28,14 @@ spec:
       serviceAccountName: kflashback-controller
       securityContext:
         runAsNonRoot: true
+        runAsUser: 65532
+        runAsGroup: 65532
+        fsGroup: 65532
         seccompProfile:
           type: RuntimeDefault
       containers:
         - name: controller
-          image: ghcr.io/kflashback/kflashback:latest
+          image: gitea-web.nullcitizen.com/jordan/kflashback:latest
           args:
             - --config-name=kflashback
             - --storage-backend=sqlite
@@ -80,10 +83,14 @@ spec:
           volumeMounts:
             - name: data
               mountPath: /data
+            - name: tmp
+              mountPath: /tmp
       volumes:
         - name: data
           persistentVolumeClaim:
             claimName: kflashback-data
+        - name: tmp
+          emptyDir: {}
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
